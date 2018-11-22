@@ -13,6 +13,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.0.0-rc.1",
     "@fortawesome/fontawesome-free": "^5.2.0",
+    "pouchdb": "^7.0.0",
     "register-service-worker": "^1.0.0",
     "roboto-fontface": "*",
     "vue": "^2.5.17",
@@ -45,7 +46,6 @@
       "plugin:vue/essential",
       "@vue/standard"
     ],
-    "rules": {},
     "parserOptions": {
       "parser": "babel-eslint"
     }

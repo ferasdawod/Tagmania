@@ -1,4 +1,5 @@
 <template>
+
   <v-app>
     <v-toolbar app>
       <v-toolbar-title class="headline text-uppercase">
@@ -20,6 +21,7 @@
       <router-view/>
     </v-content>
   </v-app>
+
 </template>
 
 <script>
