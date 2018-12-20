@@ -31,52 +31,55 @@
                             <v-layout column wrap="">
                                 <v-flex>
                                     <v-text-field
-                                        label="Name (optional)"
-                                        box
-                                        clearable
-                                        hide-details
-                                        v-model="entry.name"
+                                            label="Name (optional)"
+                                            box
+                                            clearable
+                                            hide-details
+                                            v-model="entry.name"
+                                            v-on:keyup.enter="saveItem"
                                     />
                                 </v-flex>
                                 <template v-if="entry.type === 0">
                                     <v-flex>
                                         <v-text-field
-                                            label="Link"
-                                            :rules="validations.link"
-                                            box
-                                            hide-details
-                                            clearable
-                                            v-model="entry.link"
+                                                label="Link"
+                                                :rules="validations.link"
+                                                box
+                                                hide-details
+                                                clearable
+                                                v-model="entry.link"
+                                                v-on:keyup.enter="saveItem"
                                         />
                                     </v-flex>
                                     <v-flex>
                                         <v-autocomplete
-                                            label="Tags"
-                                            box
-                                            clearable
-                                            multiple
-                                            chips
-                                            deletable-chips
-                                            dense
-                                            hide-details
-                                            :items="$store.state.tags"
-                                            item-text="name"
-                                            item-value="name"
-                                            :rules="validations.tags"
-                                            :search-input.sync="ui.search"
-                                            v-model="entry.tags"
-                                            ref="tags"
+                                                label="Tags"
+                                                box
+                                                clearable
+                                                multiple
+                                                chips
+                                                deletable-chips
+                                                dense
+                                                hide-details
+                                                :items="$store.state.tags"
+                                                item-text="name"
+                                                item-value="name"
+                                                :rules="validations.tags"
+                                                :search-input.sync="ui.search"
+                                                v-model="entry.tags"
+                                                ref="tags"
+                                                v-on:keyup.enter="saveItem"
                                         ></v-autocomplete>
                                     </v-flex>
                                 </template>
                                 <template v-else-if="entry.type === 1">
                                     <v-flex>
                                         <v-textarea
-                                            label="Content"
-                                            clearable
-                                            box
-                                            hide-details
-                                            v-model="entry.content"
+                                                label="Content"
+                                                clearable
+                                                box
+                                                hide-details
+                                                v-model="entry.content"
                                         />
                                     </v-flex>
                                 </template>
@@ -91,25 +94,23 @@
                         <v-flex md2 sm12>
                             <v-card>
                                 <v-text-field
-                                    label="Add new tag"
-                                    v-model="ui.newTagName"
-                                    hide-details
-                                    box
-                                    clearable
-                                    v-on:keyup.enter="addTag"
+                                        label="Add new tag"
+                                        v-model="ui.newTagName"
+                                        hide-details
+                                        box
+                                        clearable
+                                        v-on:keyup.enter="addTag"
                                 />
-                                <v-list v-if="$store.state.tags.length">
+                                <v-list v-if="$store.state.tags.length" class="clamp-height">
                                     <v-list-tile
-                                        @click="toggleTag(tag)"
-                                        v-for="tag in $store.state.tags"
-                                        :key="tag._id"
+                                            @click="toggleTag(tag)"
+                                            v-for="tag in $store.state.tags"
+                                            :key="tag._id"
                                     >
                                         <v-list-tile-avatar>
-                                            <v-avatar
-                                                v-if="isTagIncluded(tag.name)"
-                                                color="success"
-                                                size="25"
-                                            ></v-avatar>
+                                            <v-avatar v-if="isTagIncluded(tag.name)" color="primary" size="25">
+                                                <v-icon small color="white">fa fa-link</v-icon>
+                                            </v-avatar>
                                             <v-avatar v-else color="grey" size="25"></v-avatar>
                                         </v-list-tile-avatar>
                                         <v-list-tile-content>
@@ -128,73 +129,83 @@
 </template>
 
 <script>
-export default {
-  data: () => ({
-    ui: {
-      newTagName: null,
-      formValid: true
-    },
-    validations: {
-      name: [v => !!v || "Name is requird!"],
-      link: [v => !!v || "Link is requird!"],
-      tags: [v => v.length > 0 || "Tags are required"]
-    },
-    entry: {
-      type: 0,
-      name: null,
-      link: null,
-      content: null,
-      tags: []
-    }
-  }),
+  export default {
+    data: () => ({
+      ui: {
+        newTagName: null,
+        formValid: true
+      },
+      validations: {
+        name: [v => !!v || 'Name is requird!'],
+        link: [v => !!v || 'Link is requird!'],
+        tags: [v => v.length > 0 || 'Tags are required']
+      },
+      entry: {
+        type: 0,
+        name: null,
+        link: null,
+        content: null,
+        tags: []
+      }
+    }),
 
-  methods: {
-    fillFromClipboard() {
-      if (!navigator.clipboard) return;
-      navigator.clipboard.readText().then(response => {
-        if (!!response) this.entry.link = response;
-        this.$refs.tags.focus();
-      });
-    },
+    methods: {
+      fillFromClipboard () {
+        if (!navigator.clipboard) return
 
-    addTag() {
-      if (!!this.ui.newTagName) {
-        this.$store
-          .dispatch("addTag", this.ui.newTagName)
-          .then(() => (this.ui.newTagName = null))
-          .catch(error => {
-            console.error("Failed to add new tag");
-          });
+        navigator.clipboard.readText().then(response => {
+          if (!!response) this.entry.link = response
+          this.$refs.tags.focus()
+        }).catch(e => {})
+      },
+
+      addTag () {
+        if (!!this.ui.newTagName) {
+          this.$store
+            .dispatch('addTag', this.ui.newTagName)
+            .then(() => (this.ui.newTagName = null))
+            .catch(error => {
+              console.error('Failed to add new tag')
+            })
+        }
+      },
+
+      toggleTag (tag) {
+        const index = this.entry.tags.indexOf(tag.name)
+        if (index !== -1) {
+          this.entry.tags.splice(index, 1)
+        } else {
+          this.entry.tags.push(tag.name)
+        }
+      },
+
+      isTagIncluded (tag) {
+        return this.entry.tags.includes(tag)
+      },
+
+      saveItem () {
+        if (this.$refs.form.validate()) {
+          this.$store.dispatch('addItem', this.entry).then(() => {
+            this.$router.push({ name: 'home' })
+          })
+        }
       }
     },
 
-    toggleTag(tag) {
-      const index = this.entry.tags.indexOf(tag.name);
-      if (index !== -1) this.entry.tags.splice(index, 1);
-      else this.entry.tags.push(tag.name);
-    },
+    mounted () {
+      this.fillFromClipboard()
 
-    isTagIncluded(tag) {
-      return this.entry.tags.includes(tag);
-    },
-
-    saveItem() {
-      if (this.$refs.form.validate()) {
-        this.$store.dispatch("addItem", this.entry).then(() => {
-          this.$router.push({ name: "home" });
-        });
+      if (this.$route.query.id) {
+        this.$store.dispatch('getItem', this.$route.query.id)
+          .then(response => (this.entry = response))
       }
-    }
-  },
-
-  mounted() {
-    this.fillFromClipboard();
-
-    if (this.$route.query.id) {
-      const item = this.$store
-        .dispatch("getItem", this.$route.query.id)
-        .then(response => (this.entry = response));
     }
   }
-};
 </script>
+
+<style scoped>
+    .clamp-height {
+        overflow: auto;
+        max-height: 500px;
+    }
+</style>
