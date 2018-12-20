@@ -1,6 +1,8 @@
 {
   "name": "TagMania",
-  "version": "0.0.1",
+  "author": "Feras Dawod",
+  "description": "Easily manage and organize your bookmarks, thoughts, files or anything you like",
+  "version": "0.0.2",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
