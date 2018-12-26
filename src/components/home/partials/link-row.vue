@@ -1,5 +1,5 @@
 <template>
-  <v-list-tile v-bind="rootProps" @click @contextmenu="showContextMenu">
+  <v-list-tile @click="openItem" ripple @contextmenu="showContextMenu">
     <v-list-tile-avatar>
       <i v-if="item.type === 0" class="fas fa-globe-americas grey--text"></i>
       <i v-if="item.type === 1" class="fas fa-sticky-note grey--text"></i>
@@ -13,9 +13,9 @@
           class="my-0 ml-0 mr-2 white--text"
           :color="getRandomColor()"
           v-for="tag in item.tags"
-          :key="tag"
-        >
-          <span v-text="tag"></span>
+          :key="tag">
+            <v-icon left style="font-size: 12px;">fa-tag</v-icon>
+            <span v-text="tag"></span>
         </v-chip>
       </v-list-tile-title>
       <v-list-tile-sub-title v-if="item.type === 0" v-text="item.link"></v-list-tile-sub-title>
@@ -26,22 +26,10 @@
 
 <script>
 import colors from "vuetify/es5/util/colors";
+import events from '../../../client/services/events.service';
 
 export default {
   props: ["item"],
-
-  computed: {
-    rootProps() {
-      if (this.item.type === 0) {
-        return {
-          href: this.item.link,
-          target: "_blank"
-        };
-      } else if (this.item.type === 1) {
-        return {};
-      }
-    }
-  },
 
   methods: {
     showContextMenu(e) {
@@ -56,6 +44,14 @@ export default {
         colors[colorKeys[(colorKeys.length * Math.random()) << 0]];
 
       return randomProperty.darken2;
+    },
+
+    openItem() {
+      if (this.item.type === 0) {
+        events.openUrl(this.item.link);
+      } else {
+        this.$router.push({ name: 'view', query: { id: this.item._id } });
+      }
     }
   }
 };

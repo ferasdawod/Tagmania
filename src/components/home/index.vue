@@ -81,18 +81,21 @@
                   </v-list-tile>
                 </v-list>
               </v-menu>
-              <item-row
-                v-for="item in items"
-                :key="item._id"
-                :item="item"
-                @contextmenu="showContextMenu"
-              />
+
+                <template v-for="item in items">
+                    <link-row :key="item._id" :item="item" @contextmenu="showContextMenu"/>
+                </template>
+
+
+
             </v-list>
+
             <v-card-text v-else class="text-xs-center" key="noData">
-              <i class="fas fa-frown fa-4x grey--text text-lighten-2"></i>
+              <i class="fas fa-frown fa-2x grey--text text-lighten-2"></i>
               <br>
               <div class="pt-2 headline text--secondary">No Data</div>
             </v-card-text>
+
           </v-scroll-x-transition>
         </v-card>
       </v-flex>
@@ -101,11 +104,12 @@
 </template>
 
 <script>
-import ItemRow from "./partials/item-row.vue";
+import LinkRow from "./partials/link-row";
+import alert from '../../plugins/alert.service';
 
 export default {
   components: {
-    ItemRow
+    LinkRow,
   },
   data: () => ({
     ui: {
@@ -159,6 +163,7 @@ export default {
         const index = this.items.indexOf(this.ui.activeItem);
         this.items.splice(index, 1);
         this.ui.deleteDialog = false;
+        alert.success('Note Deleted');
       });
     },
 
