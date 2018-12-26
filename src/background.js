@@ -82,3 +82,5 @@ if (isDevelopment) {
     })
   }
 }
+
+import './plugins/app.service'
