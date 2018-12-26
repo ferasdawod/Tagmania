@@ -1,8 +1,8 @@
 {
-  "name": "TagMania",
+  "name": "tagmania",
   "author": "Feras Dawod",
   "description": "Easily manage and organize your bookmarks, thoughts, files or anything you like",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -15,12 +15,14 @@
   "dependencies": {
     "@babel/polyfill": "^7.0.0-rc.1",
     "@fortawesome/fontawesome-free": "^5.2.0",
+    "izitoast": "^1.4.0",
     "pouchdb": "^7.0.0",
     "pouchdb-find": "^7.0.0",
     "register-service-worker": "^1.0.0",
     "relational-pouch": "^3.1.0",
     "roboto-fontface": "*",
     "vue": "^2.5.17",
+    "vue-navigation": "^1.1.4",
     "vue-router": "^3.0.1",
     "vuetify": "^1.3.0",
     "vuex": "^3.0.1"
