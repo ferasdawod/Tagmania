@@ -4,7 +4,9 @@
 
     <v-content>
       <v-scroll-x-transition mode="out-in">
-        <router-view/>
+        <navigation>
+          <router-view/>
+        </navigation>
       </v-scroll-x-transition>
     </v-content>
 
