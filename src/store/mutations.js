@@ -1,5 +1,4 @@
 export default {
-
     setDb(state, payload) {
         state.db.tags = payload.tagsDb;
         state.db.items = payload.itemsDb;
@@ -11,6 +10,5 @@ export default {
 
     addTag(state, payload) {
         state.tags.push(payload);
-    }
-
-}
+    },
+};

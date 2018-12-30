@@ -1,7 +1,7 @@
-const {ipcRenderer} = require('electron');
+const { ipcRenderer } = require('electron');
 
 export default {
-  openUrl(url) {
-    ipcRenderer.send('open_url', url);
-  }
-}
+    openUrl(url) {
+        ipcRenderer.send('open_url', url);
+    },
+};

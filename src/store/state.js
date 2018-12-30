@@ -1,5 +1,4 @@
 export default {
-
     db: {
         tags: null,
         items: null,

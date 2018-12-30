@@ -15,5 +15,5 @@ export default new Vuex.Store({
     mutations,
     actions,
 
-    plugins: [initDb(), loadTags()]
+    plugins: [initDb(), loadTags()],
 });
