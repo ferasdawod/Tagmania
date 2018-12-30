@@ -21,34 +21,34 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <v-layout row wrap justify-center>
+
+        <v-layout row wrap align-center>
             <v-flex xs12 class="mb-3">
                 <h3 class="display-1">TagMania</h3>
                 <span class="text--secondary">Easily manage and organize your bookmarks, thoughts, files or anything you like</span>
             </v-flex>
-            <v-flex md3 sm12>
-                <v-layout column wrap>
-                    <v-flex>
-                        <v-text-field label="Search by name" v-model="search.name" box clearable hide-details/>
-                    </v-flex>
-                    <v-flex>
-                        <v-autocomplete
-                            label="Search by tags"
-                            box
-                            clearable
-                            multiple
-                            chips
-                            deletable-chips
-                            hide-details
-                            :items="$store.state.tags"
-                            item-text="name"
-                            item-value="name"
-                            v-model.lazy="search.tags"
-                        />
-                    </v-flex>
-                </v-layout>
+
+            <v-flex md6 sm12>
+                <v-text-field label="Search by name" v-model="search.name" box clearable hide-details/>
             </v-flex>
-            <v-flex md9 sm12>
+
+            <v-flex md6 sm12>
+                <v-autocomplete
+                    label="Search by tags"
+                    clearable
+                    multiple
+                    box
+                    small-chips
+                    deletable-chips
+                    hide-details
+                    :items="$store.state.tags"
+                    item-text="name"
+                    item-value="name"
+                    v-model.lazy="search.tags"
+                />
+            </v-flex>
+
+            <v-flex sm12>
                 <v-card>
                     <v-card-title class="info white--text">
                         <h2 class="font-weight-regular">Latest Items</h2>
