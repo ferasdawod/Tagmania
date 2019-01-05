@@ -107,6 +107,9 @@
 import LinkRow from './partials/link-row';
 import alert from '../../plugins/alert.service';
 
+import _ from 'lodash';
+import Fuse from 'fuse.js';
+
 export default {
     components: {
         LinkRow,
@@ -132,9 +135,9 @@ export default {
             this.fetchLatest();
         },
         search: {
-            handler: function() {
+            handler: _.debounce(function() {
                 this.fetchData();
-            },
+            }, 500),
             deep: true,
         },
     },
@@ -193,16 +196,23 @@ export default {
             this.$store
                 .dispatch('getAllItems')
                 .then(response => {
-                    const items = response.filter(item => {
-                        let result = true;
-                        if (this.search.tags.length) result &= this.search.tags.every(tag => item.tags.includes(tag));
-
-                        if (this.search.name) result &= item.name.toLowerCase().includes(this.search.name.toLowerCase());
-
-                        return result;
+                    let items = response.filter(item => {
+                        if (this.search.tags.length) return this.search.tags.every(tag => item.tags.includes(tag));
+                        return true;
                     });
-                    this.items = items;
 
+                    if (this.search.name) {
+                        var options = {
+                            keys: ['name', 'link', 'content', 'tags'],
+                            shouldSort: true,
+                            tokenize: true,
+                            findAllMatches: true,
+                        };
+                        const fuse = new Fuse(items, options);
+                        items = fuse.search(this.search.name);
+                    }
+
+                    this.items = items;
                     this.loading = false;
                 })
                 .catch(() => {
