@@ -19,13 +19,99 @@
                             <v-icon left>fas fa-sticky-note</v-icon>
                             <span>Note</span>
                         </v-btn>
+                        <v-btn flat class="px-4">
+                            <v-icon left>fas fa-file-alt</v-icon>
+                            <span>Document</span>
+                        </v-btn>
                         <v-btn flat disabled class="px-4">
                             <v-icon left>fas fa-file</v-icon>
                             <span>File</span>
                         </v-btn>
                     </v-btn-toggle>
                 </v-flex>
+
                 <v-flex xs12>
+                    <rs-panes style="position: initial;" units="percents" size="75" split-to="columns" :allow-resize="true">
+                        <div slot="firstPane" class="pr-3">
+                            <v-layout column wrap>
+                                <v-flex>
+                                    <v-text-field label="Name (optional)" box clearable hide-details v-model="entry.name" v-on:keyup.enter="saveItem"/>
+                                </v-flex>
+                                <template v-if="entry.type === 0">
+                                    <v-flex>
+                                        <v-text-field
+                                            label="Link"
+                                            :rules="validations.link"
+                                            box
+                                            hide-details
+                                            clearable
+                                            v-model="entry.link"
+                                            v-on:keyup.enter="saveItem"
+                                        />
+                                    </v-flex>
+                                </template>
+                                <template v-else-if="entry.type === 1">
+                                    <v-flex>
+                                        <v-textarea label="Content" clearable box hide-details :rules="validations.content" v-model="entry.content"/>
+                                    </v-flex>
+                                </template>
+                                <template v-else-if="entry.type === 2">
+                                    <v-flex>
+                                        <quill-editor v-model="entry.content" :options="quillOptions"/>
+                                    </v-flex>
+                                </template>
+                                <v-flex>
+                                    <v-autocomplete
+                                        label="Tags"
+                                        box
+                                        clearable
+                                        multiple
+                                        chips
+                                        deletable-chips
+                                        dense
+                                        hide-details
+                                        :items="$store.state.tags"
+                                        item-text="name"
+                                        item-value="name"
+                                        :rules="validations.tags"
+                                        :search-input.sync="ui.search"
+                                        v-model="entry.tags"
+                                        ref="tags"
+                                        v-on:keyup.enter="saveItem"
+                                    ></v-autocomplete>
+                                </v-flex>
+                                <v-flex>
+                                    <v-btn color="info" @click="saveItem" class="ma-0">
+                                        <v-icon left small>fas fa-save</v-icon>
+                                        <span>Save</span>
+                                    </v-btn>
+                                </v-flex>
+                            </v-layout>
+                        </div>
+
+                        <div slot="secondPane" class="pl-3 pb-2">
+                            <v-card>
+                                <v-text-field label="Add new tag" v-model="ui.newTagName" hide-details box clearable v-on:keyup.enter="addTag"/>
+                                <v-list v-if="$store.state.tags.length" class="clamp-height">
+                                    <v-list-tile @click="toggleTag(tag)" v-for="tag in $store.state.tags" :key="tag._id">
+                                        <v-list-tile-avatar>
+                                            <v-avatar v-if="isTagIncluded(tag.name)" color="primary" size="25">
+                                                <v-icon color="white" style="font-size: 12px">fa-tag</v-icon>
+                                            </v-avatar>
+                                            <v-avatar v-else color="grey" size="25"></v-avatar>
+                                        </v-list-tile-avatar>
+                                        <v-list-tile-content>
+                                            <v-list-tile-title v-text="tag.name"></v-list-tile-title>
+                                        </v-list-tile-content>
+                                    </v-list-tile>
+                                </v-list>
+                                <v-card-text v-else class="text-xs-center">No items yet!</v-card-text>
+                            </v-card>
+                        </div>
+                    </rs-panes>
+                </v-flex>
+
+                <!-- <v-flex xs12>
                     <v-layout row wrap>
                         <v-flex md10 sm12>
                             <v-layout column wrap>
@@ -48,6 +134,11 @@
                                 <template v-else-if="entry.type === 1">
                                     <v-flex>
                                         <v-textarea label="Content" clearable box hide-details :rules="validations.content" v-model="entry.content"/>
+                                    </v-flex>
+                                </template>
+                                <template v-else-if="entry.type === 2">
+                                    <v-flex>
+                                        <quill-editor v-model="entry.content" :options="quillOptions"/>
                                     </v-flex>
                                 </template>
                                 <v-flex>
@@ -98,7 +189,7 @@
                             </v-card>
                         </v-flex>
                     </v-layout>
-                </v-flex>
+                </v-flex>-->
             </v-layout>
         </v-form>
     </v-container>
@@ -107,8 +198,23 @@
 <script>
 import alert from '../../plugins/alert.service';
 
+import 'quill/dist/quill.core.css';
+import 'quill/dist/quill.snow.css';
+import 'quill/dist/quill.bubble.css';
+
+import { quillEditor } from 'vue-quill-editor';
+
+import ResSplitPane from 'vue-resize-split-pane';
+
 export default {
+    components: {
+        quillEditor,
+        'rs-panes': ResSplitPane,
+    },
     data: () => ({
+        quillOptions: {
+            theme: 'snow',
+        },
         ui: {
             newTagName: null,
             formValid: true,
@@ -178,6 +284,8 @@ export default {
                     this.$router.go(-1);
                     alert.success('Note Saved!');
                 });
+            } else {
+                alert.error('Validation Errors');
             }
         },
     },
