@@ -7,7 +7,7 @@
                         <v-icon left small>fas fa-arrow-left</v-icon>
                         <span>Back</span>
                     </v-btn>
-                    <h3 class="d-inline-block ml-3">Add New Entry</h3>
+                    <h3 class="d-inline-block ml-3" v-text="!!entry._id ? 'Edit Item' : 'Add New Item'"></h3>
                 </v-flex>
                 <v-flex xs12>
                     <v-btn-toggle mandatory v-model="entry.type">
@@ -31,7 +31,7 @@
                 </v-flex>
 
                 <v-flex xs12>
-                    <rs-panes style="position: initial;" units="percents" size="75" split-to="columns" :allow-resize="true">
+                    <rs-panes style="position: initial;" units="percents" :size="75" split-to="columns" :allow-resize="true">
                         <div slot="firstPane" class="pr-3">
                             <v-layout column wrap>
                                 <v-flex>
@@ -110,86 +110,6 @@
                         </div>
                     </rs-panes>
                 </v-flex>
-
-                <!-- <v-flex xs12>
-                    <v-layout row wrap>
-                        <v-flex md10 sm12>
-                            <v-layout column wrap>
-                                <v-flex>
-                                    <v-text-field label="Name (optional)" box clearable hide-details v-model="entry.name" v-on:keyup.enter="saveItem"/>
-                                </v-flex>
-                                <template v-if="entry.type === 0">
-                                    <v-flex>
-                                        <v-text-field
-                                            label="Link"
-                                            :rules="validations.link"
-                                            box
-                                            hide-details
-                                            clearable
-                                            v-model="entry.link"
-                                            v-on:keyup.enter="saveItem"
-                                        />
-                                    </v-flex>
-                                </template>
-                                <template v-else-if="entry.type === 1">
-                                    <v-flex>
-                                        <v-textarea label="Content" clearable box hide-details :rules="validations.content" v-model="entry.content"/>
-                                    </v-flex>
-                                </template>
-                                <template v-else-if="entry.type === 2">
-                                    <v-flex>
-                                        <quill-editor v-model="entry.content" :options="quillOptions"/>
-                                    </v-flex>
-                                </template>
-                                <v-flex>
-                                    <v-autocomplete
-                                        label="Tags"
-                                        box
-                                        clearable
-                                        multiple
-                                        chips
-                                        deletable-chips
-                                        dense
-                                        hide-details
-                                        :items="$store.state.tags"
-                                        item-text="name"
-                                        item-value="name"
-                                        :rules="validations.tags"
-                                        :search-input.sync="ui.search"
-                                        v-model="entry.tags"
-                                        ref="tags"
-                                        v-on:keyup.enter="saveItem"
-                                    ></v-autocomplete>
-                                </v-flex>
-                                <v-flex>
-                                    <v-btn color="info" @click="saveItem" class="ma-0">
-                                        <v-icon left small>fas fa-save</v-icon>
-                                        <span>Save</span>
-                                    </v-btn>
-                                </v-flex>
-                            </v-layout>
-                        </v-flex>
-                        <v-flex md2 sm12>
-                            <v-card>
-                                <v-text-field label="Add new tag" v-model="ui.newTagName" hide-details box clearable v-on:keyup.enter="addTag"/>
-                                <v-list v-if="$store.state.tags.length" class="clamp-height">
-                                    <v-list-tile @click="toggleTag(tag)" v-for="tag in $store.state.tags" :key="tag._id">
-                                        <v-list-tile-avatar>
-                                            <v-avatar v-if="isTagIncluded(tag.name)" color="primary" size="25">
-                                                <v-icon color="white" style="font-size: 12px">fa-tag</v-icon>
-                                            </v-avatar>
-                                            <v-avatar v-else color="grey" size="25"></v-avatar>
-                                        </v-list-tile-avatar>
-                                        <v-list-tile-content>
-                                            <v-list-tile-title v-text="tag.name"></v-list-tile-title>
-                                        </v-list-tile-content>
-                                    </v-list-tile>
-                                </v-list>
-                                <v-card-text v-else class="text-xs-center">No items yet!</v-card-text>
-                            </v-card>
-                        </v-flex>
-                    </v-layout>
-                </v-flex>-->
             </v-layout>
         </v-form>
     </v-container>
@@ -226,6 +146,7 @@ export default {
             tags: [v => v.length > 0 || 'Tags are required'],
         },
         entry: {
+            _id: null,
             type: 0,
             name: null,
             link: null,
@@ -282,7 +203,7 @@ export default {
             if (this.$refs.form.validate()) {
                 this.$store.dispatch('addItem', this.entry).then(() => {
                     this.$router.go(-1);
-                    alert.success('Note Saved!');
+                    alert.success('Item Saved!');
                 });
             } else {
                 alert.error('Validation Errors');
