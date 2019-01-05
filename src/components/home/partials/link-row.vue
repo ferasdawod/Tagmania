@@ -58,7 +58,8 @@ export default {
             });
         },
         getRandomColor() {
-            var colorKeys = Object.keys(colors);
+            const ignoredColors = ['grey', 'shades'];
+            var colorKeys = Object.keys(colors).filter(item => !ignoredColors.includes(item));
             const randomProperty = colors[colorKeys[(colorKeys.length * Math.random()) << 0]];
 
             return randomProperty.darken2;
