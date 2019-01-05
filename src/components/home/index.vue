@@ -5,8 +5,8 @@
                 <v-card-title>
                     <i class="fas fa-trash fa-2x error--text"></i>
                     <div class="ml-3">
-                        <h3 class="mb-0">Delete</h3>
-                        <span class="text--secondary">confirm deleting this item?</span>
+                        <h3 class="mb-0">Delete This Item?</h3>
+                        <span class="text--secondary">You won't be able to access or recover it later</span>
                     </div>
                 </v-card-title>
                 <v-spacer/>
@@ -34,13 +34,29 @@
                 </span>
             </v-flex>
 
-            <v-flex md6 sm12>
-                <v-text-field label="Search by name" v-model="search.name" box clearable hide-details/>
+            <v-flex md4 sm12>
+                <v-text-field label="Search Term" v-model="search.name" box clearable hide-details/>
             </v-flex>
 
-            <v-flex md6 sm12>
+            <v-flex md4 sm12>
                 <v-autocomplete
-                    label="Search by tags"
+                    label="Type"
+                    clearable
+                    multiple
+                    box
+                    small-chips
+                    deletable-chips
+                    hide-details
+                    :items="itemTypes"
+                    item-text="text"
+                    item-value="value"
+                    v-model.lazy="search.types"
+                />
+            </v-flex>
+
+            <v-flex md4 sm12>
+                <v-autocomplete
+                    label="Tags"
                     clearable
                     multiple
                     box
@@ -127,9 +143,17 @@ export default {
         loading: true,
         search: {
             name: null,
+            types: [],
             tags: [],
         },
     }),
+
+    computed: {
+        itemTypes() {
+            return [{ text: 'Links', value: 0 }, { text: 'Notes', value: 1 }, { text: 'Documents', value: 2 }];
+        },
+    },
+
     watch: {
         $route: function() {
             this.fetchLatest();
@@ -169,12 +193,12 @@ export default {
                 const index = this.items.indexOf(this.ui.activeItem);
                 this.items.splice(index, 1);
                 this.ui.deleteDialog = false;
-                alert.success('Note Deleted');
+                alert.success('Item Deleted');
             });
         },
 
         fetchData() {
-            if (this.search.tags.length || this.search.name) this.fetchBySearch();
+            if (this.search.tags.length || this.search.types.length || this.search.name) this.fetchBySearch();
             else this.fetchLatest();
         },
 
@@ -197,8 +221,12 @@ export default {
                 .dispatch('getAllItems')
                 .then(response => {
                     let items = response.filter(item => {
-                        if (this.search.tags.length) return this.search.tags.every(tag => item.tags.includes(tag));
-                        return true;
+                        let result = true;
+
+                        if (this.search.tags.length) result &= this.search.tags.every(tag => item.tags.includes(tag));
+                        if (this.search.types.length) result &= this.search.types.includes(item.type);
+
+                        return result;
                     });
 
                     if (this.search.name) {
