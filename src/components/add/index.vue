@@ -57,7 +57,8 @@
                                 </template>
                                 <template v-else-if="entry.type === 2">
                                     <v-flex>
-                                        <quill-editor v-model="entry.content" :options="quillOptions"/>
+                                        <!-- Rich Text Editor -->
+                                        <editor :init="tinyMceConfig" v-model="entry.content"/>
                                     </v-flex>
                                 </template>
                                 <v-flex>
@@ -117,24 +118,16 @@
 
 <script>
 import alert from '../../plugins/alert.service';
-
-import 'quill/dist/quill.core.css';
-import 'quill/dist/quill.snow.css';
-import 'quill/dist/quill.bubble.css';
-
-import { quillEditor } from 'vue-quill-editor';
-
 import ResSplitPane from 'vue-resize-split-pane';
+
+import Editor from '@tinymce/tinymce-vue';
 
 export default {
     components: {
-        quillEditor,
         'rs-panes': ResSplitPane,
+        Editor,
     },
     data: () => ({
-        quillOptions: {
-            theme: 'snow',
-        },
         ui: {
             newTagName: null,
             formValid: true,
@@ -154,6 +147,25 @@ export default {
             tags: [],
         },
     }),
+
+    computed: {
+        tinyMceConfig() {
+            return {
+                branding: false,
+                height: 300,
+                statusbar: true,
+                plugins: [
+                    'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+                    'searchreplace wordcount visualblocks visualchars code fullscreen',
+                    'insertdatetime media nonbreaking save table contextmenu directionality',
+                    'emoticons template paste textcolor colorpicker textpattern imagetools codesample',
+                ],
+                toolbar1:
+                    'undo redo | fontsizeselect | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | forecolor backcolor | print',
+                image_advtab: true,
+            };
+        },
+    },
 
     methods: {
         fillFromClipboard() {
