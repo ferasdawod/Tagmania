@@ -8,12 +8,11 @@ import actions from './actions';
 import mutations from './mutations';
 
 import initDb from './plugins/initDb';
-import loadTags from './plugins/loadTags';
 
 export default new Vuex.Store({
     state,
     mutations,
     actions,
 
-    plugins: [initDb(), loadTags()],
+    plugins: [initDb()],
 });

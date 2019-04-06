@@ -8,5 +8,6 @@ export default new Router({
         { path: '/', name: 'home', component: () => import('./components/home') },
         { path: '/add', name: 'add', component: () => import('./components/add') },
         { path: '/view', name: 'view', component: () => import('./components/view/note'), props: true },
+        { path: '/settings', name: 'settings.index', component: () => import('./components/settings') },
     ],
 });

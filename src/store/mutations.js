@@ -2,6 +2,11 @@ export default {
     setDb(state, payload) {
         state.db.tags = payload.tagsDb;
         state.db.items = payload.itemsDb;
+        state.db.ready = true;
+    },
+
+    setReady(state, isReady) {
+        state.appReady = isReady;
     },
 
     setTags(state, payload) {

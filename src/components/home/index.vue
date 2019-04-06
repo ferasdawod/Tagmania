@@ -24,14 +24,27 @@
 
         <v-layout row wrap align-center>
             <v-flex xs12 class="mb-3">
-                <h3 class="display-1">TagMania</h3>
-                <span class="text--secondary">Easily manage and organize your bookmarks, thoughts, files or anything you like</span>
-                <br>
-                <span class="text--secondary">
-                    Made with
-                    <i class="fas fa-heart red--text"></i> by
-                    <a class="email-link" href="mailto:feras.da94@gmail.com">Feras Dawod</a>
-                </span>
+                <v-card flat class="transparent">
+                    <v-card-title class="pa-0">
+                        <div>
+                            <h3 class="display-1">TagMania</h3>
+                            <span class="text--secondary">Easily manage and organize your bookmarks, thoughts, files or anything you like</span>
+                            <br>
+                            <span class="text--secondary">
+                                Made with
+                                <i class="fas fa-heart red--text"></i> by
+                                <a class="email-link" href="mailto:feras.da94@gmail.com">Feras Dawod</a>
+                            </span>
+                        </div>
+                        <v-spacer/>
+                        <div>
+                            <v-btn @click="openSettings">
+                                <v-icon small left>fas fa-cogs</v-icon>
+                                <span>Settings</span>
+                            </v-btn>
+                        </div>
+                    </v-card-title>
+                </v-card>
             </v-flex>
 
             <v-flex md4 sm12>
@@ -246,6 +259,10 @@ export default {
                 .catch(() => {
                     this.loading = false;
                 });
+        },
+
+        openSettings() {
+            this.$router.push({ name: 'settings.index' });
         },
     },
     mounted() {
